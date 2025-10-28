@@ -1,0 +1,18 @@
+# Default training configuration
+
+batch_size: 32
+num_workers: 4
+pin_memory: true
+
+# Early stopping
+early_stopping:
+  enabled: true
+  patience: 5
+  min_delta: 0.001
+
+# Checkpointing
+checkpointing:
+  enabled: true
+  save_top_k: 2
+  monitor: "f1"
+  mode: "max"

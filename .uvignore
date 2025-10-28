@@ -1,0 +1,42 @@
+# Files to ignore for uv cache
+
+# Tests
+tests/
+*.test.py
+
+# Documentation
+docs/
+*.md
+
+# Examples and notebooks
+examples/
+notebooks/
+*.ipynb
+
+# Build artifacts
+build/
+dist/
+*.egg-info/
+
+# Cache
+__pycache__/
+*.pyc
+.pytest_cache/
+.mypy_cache/
+.ruff_cache/
+
+# Data
+dataset/
+data/
+*.csv
+*.parquet
+
+# Models
+models/
+*.pkl
+*.pt
+*.pth
+
+# Logs
+logs/
+*.log

@@ -10,7 +10,7 @@ The system implements a **3-tier hierarchical detection architecture** with incr
 
 ```
 ┌─────────────────────────────────────────────────────────────────┐
-│                        System Architecture                       │
+│                        System Architecture                      │
 └─────────────────────────────────────────────────────────────────┘
 
                           ┌──────────────┐

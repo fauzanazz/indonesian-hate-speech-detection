@@ -1,0 +1,28 @@
+# TF-IDF + Logistic Regression configuration
+# BEAM Tier 1: Basic Toxicity Classification
+
+model:
+  name: "tfidf_lr"
+  type: "tfidf"
+
+  # TF-IDF parameters
+  max_features: 10000
+  ngram_range: [1, 2]
+
+  # Logistic Regression parameters
+  C: 1.0
+  max_iter: 1000
+
+  # Calibration
+  use_calibration: true
+  calibration_method: "isotonic"  # or "sigmoid"
+
+# Preprocessing
+preprocessing:
+  lowercase: true
+  remove_urls: true
+  remove_mentions: true
+  remove_numbers: false
+  remove_punctuation: false
+  use_stemming: false
+  min_length: 2

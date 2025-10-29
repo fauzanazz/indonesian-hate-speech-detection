@@ -1,0 +1,24 @@
+# Transformer (IndoBERT) configuration
+# BEAM Tier 3: Sociolinguistic/Style-based Toxicity
+
+model:
+  name: "indobert"
+  type: "transformer"
+
+  # Pre-trained model
+  model_name: "indobenchmark/indobert-base-p1"
+
+  # Tokenization
+  max_length: 64 
+
+  # Training
+  batch_size: 4  
+  learning_rate: 0.00002
+  weight_decay: 0.01
+  warmup_ratio: 0.1
+  gradient_accumulation_steps: 1
+  epochs: 3
+
+  # Pthers
+  fp16: true 
+  gradient_checkpointing: false

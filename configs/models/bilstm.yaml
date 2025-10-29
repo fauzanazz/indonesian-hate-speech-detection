@@ -1,0 +1,35 @@
+# BiLSTM configuration
+# BEAM Tier 2: Contextual/Pragmatic Toxicity
+
+model:
+  name: "bilstm"
+  type: "bilstm"
+
+  # Architecture
+  embedding_dim: 128
+  hidden_dim: 128
+  num_layers: 2
+  dropout: 0.3
+  cell_type: "lstm"  # or "gru"
+  bidirectional: true
+
+  # Vocabulary
+  max_vocab_size: 20000
+  max_seq_length: 128
+
+  # Training
+  batch_size: 32
+  learning_rate: 0.001
+  weight_decay: 0.00001
+  epochs: 20
+  patience: 5
+
+# Preprocessing
+preprocessing:
+  lowercase: true
+  remove_urls: true
+  remove_mentions: true
+  remove_numbers: false
+  remove_punctuation: false
+  use_stemming: false
+  min_length: 2

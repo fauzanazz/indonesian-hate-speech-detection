@@ -127,40 +127,87 @@ def create_app(
 
         if load_models:
             logger.info("Loading models...")
+            
+            # Auto-detect default model paths if not provided
+            resolved_model_paths = model_paths
+            if resolved_model_paths is None:
+                # Try to find project root (models/ directory should be at project root)
+                # Strategy 1: Relative to this file
+                project_root = Path(__file__).parent.parent.parent.parent
+                # Strategy 2: Check if models/ exists in current working directory
+                if not (project_root / "models").exists():
+                    cwd = Path.cwd()
+                    if (cwd / "models").exists():
+                        project_root = cwd
+                
+                resolved_model_paths = {
+                    "basic": project_root / "models" / "tfidf",
+                    "contextual": project_root / "models" / "bilstm",
+                    "sociolinguistic": project_root / "models" / "transformer",
+                }
+                logger.info("Using default model paths", project_root=str(project_root), paths={k: str(v) for k, v in resolved_model_paths.items()})
+            
+            # Load each model independently to avoid one failure blocking others
+            # Tier 1: TF-IDF model
             try:
-                # Tier 1: TF-IDF model
                 basic_model = TFIDFModel(name="tfidf_lr")
-                if model_paths and "basic" in model_paths:
-                    basic_model.load(model_paths["basic"])
+                basic_path = resolved_model_paths.get("basic")
+                if basic_path and basic_path.exists() and (basic_path / "tfidf_lr_pipeline.joblib").exists():
+                    logger.info("Loading TF-IDF model from disk", path=str(basic_path))
+                    basic_model.load(basic_path)
+                else:
+                    logger.warning("TF-IDF model not found, model will not be trained", path=str(basic_path) if basic_path else "None")
+                registry.load_model("basic", basic_model)
+            except Exception as e:
+                logger.error("Failed to load TF-IDF model", error=str(e), exc_info=True)
+                # Create untrained model instance so endpoint can return proper error
+                basic_model = TFIDFModel(name="tfidf_lr")
                 registry.load_model("basic", basic_model)
 
-                # Tier 2: BiLSTM model
+            # Tier 2: BiLSTM model
+            try:
                 contextual_model = BiLSTMModel(name="bilstm")
-                if model_paths and "contextual" in model_paths:
-                    contextual_model.load(model_paths["contextual"])
+                contextual_path = resolved_model_paths.get("contextual")
+                if contextual_path and contextual_path.exists() and (contextual_path / "bilstm_metadata.joblib").exists():
+                    logger.info("Loading BiLSTM model from disk", path=str(contextual_path))
+                    contextual_model.load(contextual_path)
+                else:
+                    logger.warning("BiLSTM model not found, model will not be trained", path=str(contextual_path) if contextual_path else "None")
+                registry.load_model("contextual", contextual_model)
+            except Exception as e:
+                logger.error("Failed to load BiLSTM model", error=str(e), exc_info=True)
+                contextual_model = BiLSTMModel(name="bilstm")
                 registry.load_model("contextual", contextual_model)
 
-                # Tier 3: Transformer model
+            # Tier 3: Transformer model
+            try:
                 sociolinguistic_model = TransformerModel(name="indobert")
-                if model_paths and "sociolinguistic" in model_paths:
-                    sociolinguistic_model.load(model_paths["sociolinguistic"])
+                sociolinguistic_path = resolved_model_paths.get("sociolinguistic")
+                if sociolinguistic_path and sociolinguistic_path.exists() and (sociolinguistic_path / "indobert_metadata.joblib").exists():
+                    logger.info("Loading Transformer model from disk", path=str(sociolinguistic_path))
+                    sociolinguistic_model.load(sociolinguistic_path)
+                else:
+                    logger.warning("Transformer model not found, model will not be trained", path=str(sociolinguistic_path) if sociolinguistic_path else "None")
+                registry.load_model("sociolinguistic", sociolinguistic_model)
+            except Exception as e:
+                logger.error("Failed to load Transformer model", error=str(e), exc_info=True)
+                sociolinguistic_model = TransformerModel(name="indobert")
                 registry.load_model("sociolinguistic", sociolinguistic_model)
 
-                logger.info("All models loaded successfully")
-            except Exception as e:
-                logger.error("Failed to load models", error=str(e))
-                # Models will remain None, endpoints will return 503
+            loaded_count = sum(1 for model in registry.models.values() if model is not None and model.is_trained)
+            logger.info("Model loading complete", loaded_count=loaded_count, total_count=len(registry.models))
 
     @app.get("/health", response_model=HealthResponse)
     async def health_check() -> HealthResponse:
+        models_loaded = {}
+        for tier in ["basic", "contextual", "sociolinguistic"]:
+            model = registry.models.get(tier)
+            models_loaded[tier] = model is not None and model.is_trained
+        
         return HealthResponse(
             status="healthy",
             version="0.1.0",
-            models_loaded={
-                "basic": registry.is_loaded("basic"),
-                "contextual": registry.is_loaded("contextual"),
-                "sociolinguistic": registry.is_loaded("sociolinguistic"),
-            },
+            models_loaded=models_loaded,
         )
 
     # Tier 1: Basic toxicity detection
@@ -170,6 +217,11 @@ def create_app(
         logger.info("Basic toxicity detection", trace_id=trace_id)
 
         model = registry.get_model("basic")
+        if not model.is_trained:
+            raise HTTPException(
+                status_code=503,
+                detail="TF-IDF model is not trained. Please train the model first.",
+            )
 
         start = time.perf_counter()
         toxicity_score = float(model.predict_proba([request.text])[0])
@@ -204,6 +256,11 @@ def create_app(
         logger.info("Contextual toxicity detection", trace_id=trace_id)
 
         model = registry.get_model("contextual")
+        if not model.is_trained:
+            raise HTTPException(
+                status_code=503,
+                detail="BiLSTM model is not trained. Please train the model first.",
+            )
 
         start = time.perf_counter()
         toxicity_score = float(model.predict_proba([request.text])[0])
@@ -234,6 +291,11 @@ def create_app(
         logger.info("Sociolinguistic toxicity detection", trace_id=trace_id)
 
         model = registry.get_model("sociolinguistic")
+        if not model.is_trained:
+            raise HTTPException(
+                status_code=503,
+                detail="Transformer model is not trained. Please train the model first.",
+            )
 
         start = time.perf_counter()
         toxicity_score = float(model.predict_proba([request.text])[0])

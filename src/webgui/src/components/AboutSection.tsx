@@ -2,9 +2,9 @@ import { Card } from "@/components/ui/card";
 import { Avatar, AvatarFallback } from "@/components/ui/avatar";
 
 const team = [
-  { name: "Alex Chen", role: "CEO & Co-founder", initials: "AC" },
-  { name: "Sarah Johnson", role: "CTO & Co-founder", initials: "SJ" },
-  { name: "Michael Park", role: "Head of AI Research", initials: "MP" }
+  { name: "Shabrina Maharani", role: "13522134", initials: "AC" },
+  { name: "Muhammad Fauzan Azhim", role: "13522153", initials: "SJ" },
+  { name: "Yasmin Farisah Salma", role: "13522140", initials: "MP" }
 ];
 
 const AboutSection = () => {

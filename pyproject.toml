@@ -52,6 +52,7 @@ dependencies = [
     "tomli>=2.3.0",
     "qdrant-client>=1.16.0",
     "sentence-transformers>=5.1.2",
+    "rank-bm25>=0.2.2",
 ]
 
 [project.optional-dependencies]

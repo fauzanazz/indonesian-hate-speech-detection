@@ -26,7 +26,7 @@ function highlightText(text: string, query: string): React.ReactElement {
     <span>
       {parts.map((part, i) => (
         part.toLowerCase() === query.toLowerCase() ? (
-          <mark key={i} className="bg-yellow-200 dark:bg-yellow-800 font-medium">
+          <mark key={i} className="bg-yellow-200 font-medium text-black">
             {part}
           </mark>
         ) : (

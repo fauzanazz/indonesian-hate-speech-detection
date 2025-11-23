@@ -34,6 +34,7 @@ export function DatasetSearch() {
       context: {
         depth: 3,
         bidirectional: true,
+        resolution: 9,
       },
     });
 
@@ -192,7 +193,7 @@ export function DatasetSearch() {
         <div>
           <h2 className="text-2xl font-semibold mb-2">Dataset Search</h2>
           <p className="text-sm text-muted-foreground">
-            Search through {allRecords.length.toLocaleString()} records using full-text search
+            Search through {allRecords.length.toLocaleString()} records
           </p>
         </div>
 

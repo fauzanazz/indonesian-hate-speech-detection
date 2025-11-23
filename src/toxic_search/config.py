@@ -72,7 +72,7 @@ class UIConfig(BaseSettings):
 class LoggingConfig(BaseSettings):
     """Logging configuration."""
 
-    level: str = "INFO"
+    level: str = "DEBUG"
     format: str = (
         "<green>{time:YYYY-MM-DD HH:mm:ss}</green> | "
         "<level>{level: <8}</level> | "

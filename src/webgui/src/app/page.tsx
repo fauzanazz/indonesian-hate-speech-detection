@@ -8,7 +8,6 @@ import AboutSection from "@/components/AboutSection";
 const Index = () => {
   return (
     <div className="min-h-screen">
-      <Header />
       <main>
         <HeroSection />
         <FeaturesSection />

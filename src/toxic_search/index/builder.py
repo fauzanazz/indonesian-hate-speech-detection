@@ -117,7 +117,7 @@ def main() -> None:
     parser = argparse.ArgumentParser(description="Index vectors into Qdrant")
     parser.add_argument("--data", type=Path, required=True, help="Data to index")
     parser.add_argument("--text-col", default="text", help="Text column name")
-    parser.add_argument("--label-col", default="label", help="Label column name")
+    parser.add_argument("--label-col", default="labels", help="Label column name")
     parser.add_argument("--model", type=Path, help="Fine-tuned model path (optional)")
     parser.add_argument("--recreate", action="store_true", help="Recreate collection")
     
@@ -127,7 +127,7 @@ def main() -> None:
     df = load_dataset(args.data, text_column=args.text_col, label_column=args.label_col)
     
     # Prepare metadata
-    metadata = [{"label": label} for label in df[args.label_col]]
+    metadata = [{"labels": label} for label in df[args.label_col]]
     
     # Load encoder
     from toxic_search.models.encoder import load_encoder

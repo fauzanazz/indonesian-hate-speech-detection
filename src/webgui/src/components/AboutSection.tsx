@@ -1,10 +1,10 @@
 import { Card } from "@/components/ui/card";
-import { Avatar, AvatarFallback } from "@/components/ui/avatar";
+import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
 
 const team = [
-  { name: "Shabrina Maharani", role: "13522134", initials: "AC" },
-  { name: "Muhammad Fauzan Azhim", role: "13522153", initials: "SJ" },
-  { name: "Yasmin Farisah Salma", role: "13522140", initials: "MP" }
+  { name: "Shabrina Maharani", role: "13522134", initials: "SM", feature: "Creator of Counter-Speech Generation", imageUrl: "https://i.pravatar.cc/150?u=shabrina" },
+  { name: "Muhammad Fauzan Azhim", role: "13522153", initials: "MFA", feature: "Creator of Search and Filter", imageUrl: "https://i.pravatar.cc/150?u=fauzan" },
+  { name: "Yasmin Farisah Salma", role: "13522140", initials: "YFS", feature: "Creator of Toxicity Detection", imageUrl: "https://i.pravatar.cc/150?u=yasmin" }
 ];
 
 const AboutSection = () => {
@@ -23,6 +23,7 @@ const AboutSection = () => {
             {team.map((member, index) => (
               <div key={index} className="flex flex-col items-center gap-3 animate-fade-in">
                 <Avatar className="w-32 h-32 border-4 border-accent/20">
+                  <AvatarImage src={member.imageUrl} alt={member.name} />
                   <AvatarFallback className="bg-gradient-accent text-2xl font-bold text-accent-foreground">
                     {member.initials}
                   </AvatarFallback>
@@ -30,6 +31,7 @@ const AboutSection = () => {
                 <div className="text-center">
                   <h3 className="font-semibold text-foreground">{member.name}</h3>
                   <p className="text-sm text-muted-foreground">{member.role}</p>
+                  <p className="text-sm text-muted-foreground">{member.feature}</p>
                 </div>
               </div>
             ))}

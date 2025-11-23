@@ -9,6 +9,7 @@ from pydantic import BaseModel as PydanticBaseModel, Field
 from toxicity_detection.models.base import BaseModel
 from toxicity_detection.models.bilstm_model import BiLSTMModel
 from toxicity_detection.models.tfidf_model import TFIDFModel
+from toxicity_detection.models.ensemble import EnsembleService, load_ensemble_config
 from toxicity_detection.models.transformer_model import TransformerModel
 from toxicity_detection.utils.logging import generate_trace_id, setup_logger
 
@@ -75,6 +76,7 @@ class ModelRegistry:
 
 # Global registry
 registry = ModelRegistry()
+ensemble_service: Optional[EnsembleService] = None
 
 
 def create_app(
@@ -125,27 +127,29 @@ def create_app(
     async def startup_event() -> None:
         logger.info("Starting API server...")
 
+        primary_root = Path(__file__).parent.parent.parent.parent
+        candidate_roots = [primary_root, Path.cwd()]
+        project_root = next(
+            (root for root in candidate_roots if (root / "configs").exists()),
+            primary_root,
+        )
+
         if load_models:
             logger.info("Loading models...")
             
             # Auto-detect default model paths if not provided
             resolved_model_paths = model_paths
             if resolved_model_paths is None:
-                # Try to find project root (models/ directory should be at project root)
-                # Strategy 1: Relative to this file
-                project_root = Path(__file__).parent.parent.parent.parent
-                # Strategy 2: Check if models/ exists in current working directory
-                if not (project_root / "models").exists():
-                    cwd = Path.cwd()
-                    if (cwd / "models").exists():
-                        project_root = cwd
-                
+                model_root = next(
+                    (root for root in candidate_roots if (root / "models").exists()),
+                    project_root,
+                )
                 resolved_model_paths = {
-                    "basic": project_root / "models" / "tfidf",
-                    "contextual": project_root / "models" / "bilstm",
-                    "sociolinguistic": project_root / "models" / "transformer",
+                    "basic": model_root / "models" / "tfidf",
+                    "contextual": model_root / "models" / "bilstm",
+                    "sociolinguistic": model_root / "models" / "transformer",
                 }
-                logger.info("Using default model paths", project_root=str(project_root), paths={k: str(v) for k, v in resolved_model_paths.items()})
+                logger.info("Using default model paths", project_root=str(model_root), paths={k: str(v) for k, v in resolved_model_paths.items()})
             
             # Load each model independently to avoid one failure blocking others
             # Tier 1: TF-IDF model
@@ -197,6 +201,16 @@ def create_app(
             loaded_count = sum(1 for model in registry.models.values() if model is not None and model.is_trained)
             logger.info("Model loading complete", loaded_count=loaded_count, total_count=len(registry.models))
 
+        config_path = project_root / "configs" / "models" / "ensemble.yaml"
+        ensemble_config = load_ensemble_config(config_path)
+        global ensemble_service
+        ensemble_service = EnsembleService(registry, ensemble_config)
+        logger.info(
+            "Ensemble service initialized",
+            threshold=f"{ensemble_config.threshold:.2f}",
+            weights=ensemble_config.weights,
+        )
+
     @app.get("/health", response_model=HealthResponse)
     async def health_check() -> HealthResponse:
         models_loaded = {}
@@ -245,6 +259,73 @@ def create_app(
             tier="basic",
             model_name=model.name,
             latency_ms=latency_ms,
+            trace_id=trace_id,
+            explanation=explanation,
+        )
+
+    @app.post("/api/v1/ensemble", response_model=ToxicityResponse)
+    async def predict_ensemble(request: ToxicityRequest, req: Request) -> ToxicityResponse:
+        trace_id = req.state.trace_id
+        logger.info("Ensemble toxicity detection", trace_id=trace_id)
+
+        if ensemble_service is None:
+            raise HTTPException(
+                status_code=503,
+                detail="Ensemble service is not initialized.",
+            )
+
+        try:
+            result = ensemble_service.predict(
+                request.text,
+                return_explanation=request.return_explanation,
+            )
+        except RuntimeError as exc:
+            raise HTTPException(status_code=503, detail=str(exc)) from exc
+
+        confidence = _get_confidence_level(
+            result.score,
+            threshold=ensemble_service.config.threshold,
+        )
+
+        used_models = [
+            tier
+            for tier, prediction in result.per_model.items()
+            if prediction.used
+        ]
+        model_name = "+".join(
+            registry.models[tier].name  # type: ignore[index]
+            for tier in used_models
+            if registry.models.get(tier)
+        )
+
+        explanation: Optional[dict] = None
+        if request.return_explanation:
+            explanation = {
+                "ensemble": {
+                    "weights": result.weights,
+                    "threshold": ensemble_service.config.threshold,
+                    "review_recommended": result.review_recommended,
+                },
+                "per_model": {},
+            }
+
+            for tier, prediction in result.per_model.items():
+                if not prediction.used:
+                    continue
+                explanation["per_model"][tier] = {
+                    "score": prediction.score,
+                    "latency_ms": prediction.latency_ms,
+                    "explanation": prediction.explanation,
+                }
+
+        return ToxicityResponse(
+            text=request.text,
+            is_toxic=result.is_toxic,
+            toxicity_score=result.score,
+            confidence=confidence,
+            tier="ensemble",
+            model_name=model_name or "ensemble",
+            latency_ms=result.total_latency_ms,
             trace_id=trace_id,
             explanation=explanation,
         )
@@ -331,8 +412,8 @@ def create_app(
     return app
 
 
-def _get_confidence_level(score: float) -> str:
-    distance_from_threshold = abs(score - 0.5)
+def _get_confidence_level(score: float, threshold: float = 0.5) -> str:
+    distance_from_threshold = abs(score - threshold)
     if distance_from_threshold > 0.3:
         return "high"
     elif distance_from_threshold > 0.15:

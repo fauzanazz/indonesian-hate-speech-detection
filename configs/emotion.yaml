@@ -1,0 +1,23 @@
+data_dir: dataset/Emotion Dataset from Indonesian Public Opinion
+output_dir: artifacts/emotion
+
+model_name: logreg
+random_state: 42
+test_size: 0.2
+
+max_features: 20000
+ngram_min: 1
+ngram_max: 2
+
+pretrained_model_name: indobenchmark/indobert-base-p1
+num_epochs: 3
+learning_rate: 0.00002
+batch_size: 16
+warmup_ratio: 0.06
+weight_decay: 0.01
+
+api_host: 0.0.0.0
+api_port: 8000
+
+log_level: INFO
+

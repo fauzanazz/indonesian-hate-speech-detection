@@ -1,0 +1,26 @@
+# Ensemble configuration for production inference
+
+ensemble:
+  weights:
+    basic: 0.25
+    contextual: 0.35
+    sociolinguistic: 0.40
+
+  # Decision threshold applied to aggregated probability
+  threshold: 0.52
+
+  # Margin around the threshold that triggers manual review flagging
+  abstain_margin: 0.05
+
+  # Cascade thresholds determine early exits (measured as |p - 0.5|)
+  cascade_thresholds:
+    basic: 0.35
+    contextual: 0.25
+
+
+
+
+
+
+
+

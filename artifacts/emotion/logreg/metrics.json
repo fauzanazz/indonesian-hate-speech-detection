@@ -1,0 +1,53 @@
+{
+  "accuracy": 0.7119487908961594,
+  "macro_precision": 0.7285078255930157,
+  "macro_recall": 0.7208065978520369,
+  "macro_f1": 0.7198938216220901,
+  "labels": [
+    "anger",
+    "fear",
+    "joy",
+    "love",
+    "neutral",
+    "sad"
+  ],
+  "per_class": {
+    "anger": {
+      "precision": 0.7317073170731707,
+      "recall": 0.6666666666666666,
+      "f1": 0.6976744186046512,
+      "support": 225
+    },
+    "fear": {
+      "precision": 0.8117647058823529,
+      "recall": 0.7624309392265194,
+      "f1": 0.7863247863247863,
+      "support": 181
+    },
+    "joy": {
+      "precision": 0.783410138248848,
+      "recall": 0.6746031746031746,
+      "f1": 0.7249466950959488,
+      "support": 252
+    },
+    "love": {
+      "precision": 0.6354679802955665,
+      "recall": 0.8543046357615894,
+      "f1": 0.7288135593220338,
+      "support": 151
+    },
+    "neutral": {
+      "precision": 0.6439909297052154,
+      "recall": 0.7135678391959799,
+      "f1": 0.6769964243146603,
+      "support": 398
+    },
+    "sad": {
+      "precision": 0.7647058823529411,
+      "recall": 0.6532663316582915,
+      "f1": 0.7046070460704607,
+      "support": 199
+    }
+  },
+  "classification_report": "              precision    recall  f1-score   support\n\n       anger       0.73      0.67      0.70       225\n        fear       0.81      0.76      0.79       181\n         joy       0.78      0.67      0.72       252\n        love       0.64      0.85      0.73       151\n     neutral       0.64      0.71      0.68       398\n         sad       0.76      0.65      0.70       199\n\n    accuracy                           0.71      1406\n   macro avg       0.73      0.72      0.72      1406\nweighted avg       0.72      0.71      0.71      1406\n"
+}

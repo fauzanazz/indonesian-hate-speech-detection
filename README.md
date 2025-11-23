@@ -17,7 +17,7 @@ NLP system for detecting toxicity in Indonesian text using **BEAM (Boxology Exte
 
 ```
 ┌─────────────────────────────────────────────────────────────┐
-│                    INPUT: Indonesian Text                    │
+│                    INPUT: Indonesian Text                   │
 └────────────────────────┬────────────────────────────────────┘
                          │
         ┌────────────────┼────────────────┐
@@ -49,11 +49,11 @@ NLP system for detecting toxicity in Indonesian text using **BEAM (Boxology Exte
                        │
                        ▼
 ┌─────────────────────────────────────────────────┐
-│            OUTPUT: Toxicity Score                │
-│  • is_toxic: boolean                             │
-│  • toxicity_score: [0, 1]                        │
-│  • confidence: low/medium/high                   │
-│  • explanation: feature importance/attention     │
+│            OUTPUT: Toxicity Score               │
+│  • is_toxic: boolean                            │
+│  • toxicity_score: [0, 1]                       │
+│  • confidence: low/medium/high                  │
+│  • explanation: feature importance/attention    │
 └─────────────────────────────────────────────────┘
 ```
 

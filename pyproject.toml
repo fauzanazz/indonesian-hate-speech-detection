@@ -76,6 +76,7 @@ all = ["toxicity-detection[dev,streamlit]"]
 toxicity-train = "toxicity_detection.cli:train"
 toxicity-eval = "toxicity_detection.cli:evaluate"
 toxicity-serve = "toxicity_detection.cli:serve"
+emotion-cli = "emotion_detection.cli:main"
 
 [tool.setuptools.packages.find]
 where = ["src"]
@@ -119,3 +120,6 @@ exclude_lines = [
     "if __name__ == .__main__.:",
     "if TYPE_CHECKING:",
 ]
+
+[tool.uv.workspace]
+members = ["src/emotion_detection"]

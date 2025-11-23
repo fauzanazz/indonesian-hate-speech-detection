@@ -1,0 +1,12 @@
+{
+  "train_size": 5622,
+  "test_size": 1406,
+  "labels": [
+    "anger",
+    "fear",
+    "joy",
+    "love",
+    "neutral",
+    "sad"
+  ]
+}

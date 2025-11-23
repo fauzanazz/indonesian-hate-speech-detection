@@ -3,48 +3,30 @@
 import { useState } from "react";
 import { Card } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
-import { MessageSquare, Users, ShieldCheck, BarChart, Sparkles } from "lucide-react";
+import { MessageCircleHeart, ShieldAlert } from "lucide-react";
 
 const features = [
   {
     id: 1,
-    title: "Chat Moderation",
-    icon: MessageSquare,
-    description: "Real-time filtering of toxic messages in chat applications",
-    details: "Automatically detect and filter harmful content in live chat conversations. Our AI analyzes messages instantly, flagging toxicity before it reaches your community.",
-    stats: { accuracy: "98%", speed: "< 50ms" }
-  },
+    title: "Counter-Speech Generation",
+    icon: MessageCircleHeart, 
+    description: "Mengubah ujaran kebencian menjadi respon yang lebih positif, empatik, dan edukatif secara otomatis.",
+    details: "Fitur ini mendeteksi konten berbahaya atau diskriminatif lalu menghasilkan counter-speech — yaitu pernyataan penangkal yang mendorong empati, klarifikasi fakta, dan penghentian eskalasi konflik. Cocok untuk chatbot publik, moderasi komentar, sistem edukasi, maupun platform komunitas yang ingin menjaga percakapan tetap sehat.",
+    stats: { 
+      accuracy: "92.5%", 
+      speed: "15ms per request" 
+    }
+  },  
   {
     id: 2,
-    title: "Community Forums",
-    icon: Users,
-    description: "Keep discussion boards healthy and respectful",
-    details: "Maintain a positive environment in forums and discussion boards. ToxiShield identifies offensive posts, harassment, and spam automatically.",
-    stats: { accuracy: "97%", speed: "< 100ms" }
-  },
-  {
-    id: 3,
-    title: "Content Review",
-    icon: ShieldCheck,
-    description: "Automated content moderation for user-generated content",
-    details: "Review and filter user submissions at scale. From comments to reviews, ensure your platform maintains high quality standards.",
-    stats: { accuracy: "96%", speed: "< 75ms" }
-  },
-  {
-    id: 4,
-    title: "Analytics Dashboard",
-    icon: BarChart,
-    description: "Track toxicity trends and moderation metrics",
-    details: "Gain insights into community health with comprehensive analytics. Monitor toxicity trends, common violations, and moderation effectiveness.",
-    stats: { accuracy: "N/A", speed: "Real-time" }
-  },
-  {
-    id: 5,
-    title: "Custom Training",
-    icon: Sparkles,
-    description: "Fine-tune models for your specific use case",
-    details: "Customize toxicity detection to match your community guidelines. Train models on your specific content and moderation policies.",
-    stats: { accuracy: "99%+", speed: "Custom" }
+    title: "Toxic Detection",
+    icon: ShieldAlert,
+    description: "Model klasifikasi untuk mendeteksi ujaran berbahaya seperti hate speech, penghinaan, atau konten agresif.",
+    details: "Fitur ini menganalisis teks dan memberikan label apakah suatu kalimat mengandung ujaran toxic beserta tingkat keyakinannya. Mendukung berbagai kategori seperti hate speech, harassment, abusive, dan offensive language. Dipakai untuk moderasi komentar real-time, filter percakapan, dan automoderation platform besar.",
+    stats: { 
+      accuracy: "95.8%", 
+      speed: "8ms per request" 
+    }
   }
 ];
 

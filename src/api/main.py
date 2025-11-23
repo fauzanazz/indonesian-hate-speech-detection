@@ -13,6 +13,11 @@ from loguru import logger
 from api import __version__
 from api.config import get_config
 from api.schemas import HealthResponse, ServiceHealth
+from api.counter_speech_routes import (
+    get_counter_speech_service_health,
+    initialize_counter_speech_service,
+    router as counter_speech_router,
+)
 from api.search_routes import (
     get_search_service_health,
     initialize_search_service,
@@ -51,10 +56,10 @@ def create_app() -> FastAPI:
     setup_logging()
 
     app = FastAPI(
-        title="Indonesian Toxicity Detection & Search API",
+        title="Indonesian Toxicity Detection, Search & Counter Speech API",
         description=(
-            "Unified API for toxicity detection using BEAM architecture "
-            "and semantic search for toxic content"
+            "Unified API for toxicity detection using BEAM architecture, "
+            "semantic search for toxic content, and counter speech generation"
         ),
         version=__version__,
         docs_url="/docs",
@@ -124,6 +129,13 @@ def create_app() -> FastAPI:
         except Exception as e:
             logger.error(f"Failed to initialize search service: {e}", exc_info=True)
 
+        # Initialize counter speech service
+        try:
+            initialize_counter_speech_service()
+            logger.info("Counter speech service initialized")
+        except Exception as e:
+            logger.error(f"Failed to initialize counter speech service: {e}", exc_info=True)
+
         logger.info("API server startup complete")
 
     # Health check endpoint
@@ -143,8 +155,22 @@ def create_app() -> FastAPI:
         )
         search_status = "healthy" if search_health["qdrant_connected"] else "degraded"
 
-        # Overall status
-        overall_status = "healthy" if (toxicity_status == "healthy" or search_status == "healthy") else "degraded"
+        # Get counter speech service health
+        counter_speech_health = get_counter_speech_service_health()
+        counter_speech_status = "healthy" if counter_speech_health["model_loaded"] else "degraded"
+
+        # Overall status - at least one service should be healthy
+        all_healthy = all([
+            toxicity_status == "healthy",
+            search_status == "healthy",
+            counter_speech_status == "healthy"
+        ])
+        any_healthy = any([
+            toxicity_status == "healthy",
+            search_status == "healthy",
+            counter_speech_status == "healthy"
+        ])
+        overall_status = "healthy" if any_healthy else "degraded"
 
         return HealthResponse(
             status=overall_status,
@@ -158,12 +184,17 @@ def create_app() -> FastAPI:
                     status=search_status,
                     details=search_health,
                 ),
+                "counter_speech": ServiceHealth(
+                    status=counter_speech_status,
+                    details=counter_speech_health,
+                ),
             },
         )
 
     # Include routers
     app.include_router(toxicity_router, prefix="/api/v1")
     app.include_router(search_router, prefix="/api/v1")
+    app.include_router(counter_speech_router, prefix="/api/v1")
 
     logger.info("FastAPI application created")
 

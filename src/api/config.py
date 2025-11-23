@@ -45,6 +45,17 @@ class SearchConfig(BaseSettings):
     score_threshold: float = 0.7
 
 
+class CounterSpeechConfig(BaseSettings):
+    """Counter speech generation configuration."""
+
+    model_name: str = "Wikidepia/IndoT5-base"
+    max_length: int = 512
+    max_target_length: int = 128
+    num_beams: int = 4
+    temperature: float = 1.0
+    do_sample: bool = False
+
+
 class QdrantConfig(BaseSettings):
     """Vector database configuration."""
 
@@ -77,6 +88,7 @@ class UnifiedConfig(BaseSettings):
     toxicity_models: ToxicityModelConfig = Field(default_factory=ToxicityModelConfig)
     search: SearchConfig = Field(default_factory=SearchConfig)
     qdrant: QdrantConfig = Field(default_factory=QdrantConfig)
+    counter_speech: CounterSpeechConfig = Field(default_factory=CounterSpeechConfig)
     logging: LoggingConfig = Field(default_factory=LoggingConfig)
 
 
@@ -112,6 +124,7 @@ def get_config() -> UnifiedConfig:
             toxicity_models=ToxicityModelConfig(**toml_config.get("toxicity_models", {})),
             search=SearchConfig(**toml_config.get("search", {})),
             qdrant=QdrantConfig(**toml_config.get("qdrant", {})),
+            counter_speech=CounterSpeechConfig(**toml_config.get("counter_speech", {})),
             logging=LoggingConfig(**toml_config.get("logging", {})),
         )
 

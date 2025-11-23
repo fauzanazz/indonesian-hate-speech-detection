@@ -1,4 +1,4 @@
-const API_BASE = "http://localhost:8001/api/v1";
+const API_BASE = "http://localhost:8000/api/v1";
 
 // Toxicity Detection Types
 export interface ToxicityRequest {
@@ -35,6 +35,29 @@ export interface SearchResponse {
   query: string;
   results: SearchResultItem[];
   count: number;
+}
+
+// Counter Speech Types
+export interface CounterSpeechRequest {
+  text: string;
+  max_length?: number;
+  num_beams?: number;
+  temperature?: number;
+  do_sample?: boolean;
+}
+
+export interface CounterSpeechResponse {
+  text: string;
+  counter_speech: string;
+  model: string;
+  generation_config?: {
+    max_length: number;
+    num_beams: number;
+    temperature: number;
+    do_sample: boolean;
+    length_penalty: number;
+    repetition_penalty: number;
+  };
 }
 
 // Toxicity Detection Service
@@ -113,6 +136,37 @@ export const searchService = {
       throw new Error(`API error: ${response.statusText}`);
     }
     
+    return response.json();
+  },
+};
+
+// Counter Speech Service
+export const counterSpeechService = {
+  async generate(
+    text: string,
+    options?: {
+      maxLength?: number;
+      numBeams?: number;
+      temperature?: number;
+      doSample?: boolean;
+    }
+  ): Promise<CounterSpeechResponse> {
+    const response = await fetch(`${API_BASE}/counter-speech/generate`, {
+      method: "POST",
+      headers: { "Content-Type": "application/json" },
+      body: JSON.stringify({
+        text,
+        max_length: options?.maxLength,
+        num_beams: options?.numBeams,
+        temperature: options?.temperature,
+        do_sample: options?.doSample,
+      }),
+    });
+
+    if (!response.ok) {
+      throw new Error(`API error: ${response.statusText}`);
+    }
+
     return response.json();
   },
 };

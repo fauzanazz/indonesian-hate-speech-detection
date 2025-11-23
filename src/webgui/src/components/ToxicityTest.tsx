@@ -5,21 +5,26 @@ import { Button } from "@/components/ui/button";
 import { Textarea } from "@/components/ui/textarea";
 import { Card } from "@/components/ui/card";
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
-import { AlertTriangle, CheckCircle, Loader2 } from "lucide-react";
-import { toxicityService, ToxicityResponse } from "@/services/api";
+import { AlertTriangle, CheckCircle, Loader2, MessageSquare } from "lucide-react";
+import { toxicityService, ToxicityResponse, counterSpeechService, CounterSpeechResponse } from "@/services/api";
 
 const ToxicityTest = () => {
   const [text, setText] = useState("");
   const [tier, setTier] = useState<"basic" | "contextual" | "sociolinguistic" | "ensemble">("ensemble");
   const [result, setResult] = useState<ToxicityResponse | null>(null);
+  const [counterSpeech, setCounterSpeech] = useState<CounterSpeechResponse | null>(null);
   const [isAnalyzing, setIsAnalyzing] = useState(false);
+  const [isGeneratingCounter, setIsGeneratingCounter] = useState(false);
   const [error, setError] = useState<string | null>(null);
+  const [counterSpeechError, setCounterSpeechError] = useState<string | null>(null);
 
   const analyzeText = async () => {
     if (!text.trim()) return;
     
     setIsAnalyzing(true);
     setError(null);
+    setCounterSpeech(null);
+    setCounterSpeechError(null);
     
     try {
       let response: ToxicityResponse;
@@ -40,10 +45,32 @@ const ToxicityTest = () => {
       }
       
       setResult(response);
+      
+      // If toxic, automatically generate counter speech
+      if (response.is_toxic) {
+        await generateCounterSpeech(text);
+      }
     } catch (err) {
       setError(err instanceof Error ? err.message : "Failed to analyze text");
     } finally {
       setIsAnalyzing(false);
+    }
+  };
+
+  const generateCounterSpeech = async (textToCounter: string) => {
+    setIsGeneratingCounter(true);
+    setCounterSpeechError(null);
+    
+    try {
+      const response = await counterSpeechService.generate(textToCounter, {
+        numBeams: 4,
+        maxLength: 128,
+      });
+      setCounterSpeech(response);
+    } catch (err) {
+      setCounterSpeechError(err instanceof Error ? err.message : "Failed to generate counter speech");
+    } finally {
+      setIsGeneratingCounter(false);
     }
   };
 
@@ -160,6 +187,66 @@ const ToxicityTest = () => {
           </div>
         )}
       </Card>
+
+      {/* Counter Speech Section - Only shown if toxic content detected */}
+      {result?.is_toxic && (
+        <Card className="p-6 bg-gradient-to-br from-blue-50/50 to-indigo-50/50 dark:from-blue-950/20 dark:to-indigo-950/20 border-blue-200 dark:border-blue-800 shadow-elevated">
+          <div className="space-y-4">
+            <div className="flex items-center gap-3">
+              <MessageSquare className="w-6 h-6 text-blue-600 dark:text-blue-400" />
+              <h3 className="text-xl font-bold text-foreground">Counter Speech Suggestion</h3>
+            </div>
+
+            {isGeneratingCounter ? (
+              <div className="flex items-center justify-center py-8">
+                <Loader2 className="w-8 h-8 animate-spin text-blue-600 dark:text-blue-400" />
+                <span className="ml-3 text-muted-foreground">Generating counter speech...</span>
+              </div>
+            ) : counterSpeechError ? (
+              <div className="p-4 bg-destructive/10 border border-destructive/20 rounded-lg">
+                <div className="flex items-start gap-2">
+                  <AlertTriangle className="w-5 h-5 text-destructive flex-shrink-0 mt-0.5" />
+                  <div>
+                    <p className="font-medium text-destructive">Failed to generate counter speech</p>
+                    <p className="text-sm text-destructive/80 mt-1">{counterSpeechError}</p>
+                  </div>
+                </div>
+              </div>
+            ) : counterSpeech ? (
+              <div className="space-y-4 animate-fade-in">
+                <div className="p-4 bg-white dark:bg-gray-900 rounded-lg border border-blue-200 dark:border-blue-800">
+                  <div className="text-sm text-muted-foreground mb-2">Suggested Response:</div>
+                  <p className="text-base text-foreground leading-relaxed">
+                    {counterSpeech.counter_speech}
+                  </p>
+                </div>
+
+                <div className="grid md:grid-cols-2 gap-3">
+                  <div className="p-3 bg-white/50 dark:bg-gray-900/50 rounded-lg">
+                    <div className="text-xs text-muted-foreground mb-1">Model</div>
+                    <div className="text-sm font-medium text-foreground">
+                      {counterSpeech.model}
+                    </div>
+                  </div>
+
+                  {counterSpeech.generation_config && (
+                    <div className="p-3 bg-white/50 dark:bg-gray-900/50 rounded-lg">
+                      <div className="text-xs text-muted-foreground mb-1">Beam Search</div>
+                      <div className="text-sm font-medium text-foreground">
+                        {counterSpeech.generation_config.num_beams} beams
+                      </div>
+                    </div>
+                  )}
+                </div>
+
+                <div className="text-xs text-muted-foreground italic">
+                  This counter speech was automatically generated using IndoT5 to help respond constructively to toxic content.
+                </div>
+              </div>
+            ) : null}
+          </div>
+        </Card>
+      )}
     </div>
   );
 };

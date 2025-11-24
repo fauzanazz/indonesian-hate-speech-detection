@@ -43,15 +43,44 @@ The project is a monorepo combining a Python backend with a TypeScript/Next.js f
 
 ## 🚀 Getting Started
 
-Follow these instructions to set up and run the project on your local machine.
+You can run this project either with **Docker** (recommended for quick setup) or via **manual installation**.
 
-### Prerequisites
+### 🐳 Option A: Docker Setup (Recommended)
+
+The fastest way to get started. See [QUICKSTART.md](./QUICKSTART.md) for details.
+
+```bash
+# One-command setup
+./scripts/docker-setup.sh
+
+# Or manually
+docker-compose up -d
+
+# Access the API
+# - API: http://localhost:8000
+# - Docs: http://localhost:8000/docs
+# - Qdrant: http://localhost:6333
+```
+
+**Benefits**:
+- No dependency management needed
+- Includes Qdrant vector database
+- Production-ready configuration
+- Easy scaling and deployment
+
+See [DOCKER.md](./DOCKER.md) for comprehensive Docker documentation.
+
+### 💻 Option B: Manual Setup
+
+For development or custom configurations.
+
+#### Prerequisites
 
 -   Python 3.9+ and `uv` (`pip install uv`)
 -   Node.js v18+ and Bun (`npm install -g bun`)
 -   An instance of Qdrant running (e.g., via Docker).
 
-### 1. Backend Setup
+#### 1. Backend Setup
 
 First, set up and run the FastAPI server.
 
@@ -72,7 +101,7 @@ uvicorn src.api.main:app --host 0.0.0.0 --port 8000 --reload
 
 The API server should now be running at `http://localhost:8000`. You can access the documentation at `http://localhost:8000/docs`.
 
-### 2. Frontend Setup
+#### 2. Frontend Setup
 
 In a new terminal, set up and run the Next.js web application.
 

@@ -1,5 +1,6 @@
 """Training loop for semantic encoder with triplet loss."""
 
+import json
 from pathlib import Path
 
 import torch
@@ -63,13 +64,59 @@ def train(
         epochs=config.num_epochs,
         warmup_steps=warmup_steps,
         optimizer_params={'lr': config.learning_rate},
-        output_path=str(output_path),
-        save_best_model=True,
+        output_path=None,  # Don't save during training
+        save_best_model=False,  # We'll save explicitly after
         show_progress_bar=True,
         use_amp=config.fp16,
     )
     
-    logger.info(f"Training complete. Model saved to {output_path}")
+    # Explicitly save the model after training
+    logger.info(f"Training complete. Saving model to {output_path}")
+    output_path = Path(output_path)
+    output_path.mkdir(parents=True, exist_ok=True)
+    
+    # Save using the encoder's save method which wraps SentenceTransformer.save
+    encoder.model.save(str(output_path))
+    
+    # Fix missing model_type in config.json
+    config_path = output_path / "config.json"
+    if config_path.exists():
+        try:
+            with open(config_path, "r") as f:
+                model_config = json.load(f)
+            
+            if "model_type" not in model_config:
+                model_type = None
+                try:
+                    transformer_module = encoder.model[0]
+                    if hasattr(transformer_module, "auto_model"):
+                        model_type = transformer_module.auto_model.config.model_type
+                except Exception as e:
+                    logger.warning(f"Could not detect model_type from encoder: {e}")
+
+                if not model_type:
+                    # Fallback for paraphrase-multilingual-mpnet-base-v2
+                    logger.warning("Could not detect model_type, defaulting to 'xlm-roberta'")
+                    model_type = "xlm-roberta"
+
+                model_config["model_type"] = model_type
+                logger.info(f"Added missing model_type='{model_type}' to config.json")
+                
+                with open(config_path, "w") as f:
+                    json.dump(model_config, f, indent=2)
+        except Exception as e:
+            logger.warning(f"Could not fix model_type in config.json: {e}")
+    
+    # Verify the save was successful by checking for required files
+    required_files = ['config.json', 'modules.json']
+    saved_files = list(output_path.iterdir())
+    logger.info(f"Files saved: {[f.name for f in saved_files]}")
+    
+    missing_files = [f for f in required_files if not (output_path / f).exists()]
+    if missing_files:
+        logger.warning(f"Missing required files: {missing_files}")
+    else:
+        logger.info(f"Model successfully saved to {output_path}")
     
     return encoder
 

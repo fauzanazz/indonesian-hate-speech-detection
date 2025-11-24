@@ -128,3 +128,27 @@ exclude_lines = [
 
 [tool.uv.workspace]
 members = ["src/emotion_detection"]
+
+[tool.counter-speech-generation.model]
+base_model = "models/counter_speech"  # or "Wikidepia/IndoT5-base" for default
+max_length = 512
+max_target_length = 128
+num_beams = 4
+length_penalty = 1.0
+repetition_penalty = 1.2
+temperature = 1.0
+do_sample = false
+
+[tool.counter-speech-generation.training]
+use_cpu = false  # Set to true if you don't have GPU
+
+[tool.toxic-search.model]
+base_model = "models/toxic_search"  # or "sentence-transformers/paraphrase-multilingual-mpnet-base-v2"
+max_seq_length = 128
+embedding_dim = 768
+distance_metric = "cosine"
+
+[tool.toxic-search.qdrant]
+host = "localhost"
+port = 6333
+collection_name = "toxic_vectors"

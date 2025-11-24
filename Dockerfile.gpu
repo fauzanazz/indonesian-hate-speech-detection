@@ -1,0 +1,78 @@
+# GPU-enabled Dockerfile for Indonesian Toxicity Detection API
+# Uses CUDA base image for GPU acceleration
+
+# Stage 1: Base image with CUDA support
+FROM nvidia/cuda:11.8.0-cudnn8-runtime-ubuntu22.04 as base
+
+# Set environment variables
+ENV PYTHONUNBUFFERED=1 \
+    PYTHONDONTWRITEBYTECODE=1 \
+    PIP_NO_CACHE_DIR=1 \
+    PIP_DISABLE_PIP_VERSION_CHECK=1 \
+    DEBIAN_FRONTEND=noninteractive \
+    CUDA_HOME=/usr/local/cuda
+
+# Install Python and system dependencies
+RUN apt-get update && apt-get install -y --no-install-recommends \
+    python3.11 \
+    python3.11-dev \
+    python3-pip \
+    build-essential \
+    curl \
+    git \
+    && ln -sf /usr/bin/python3.11 /usr/bin/python \
+    && ln -sf /usr/bin/python3.11 /usr/bin/python3 \
+    && rm -rf /var/lib/apt/lists/*
+
+# Upgrade pip
+RUN pip install --upgrade pip setuptools wheel
+
+# Stage 2: Dependencies installation
+FROM base as builder
+
+WORKDIR /build
+
+# Copy dependency files
+COPY pyproject.toml setup.py ./
+COPY requirements.txt ./
+
+# Install PyTorch with CUDA support first
+RUN pip install --user --no-warn-script-location \
+    torch torchvision torchaudio --index-url https://download.pytorch.org/whl/cu118
+
+# Install other dependencies
+RUN pip install --user --no-warn-script-location -r requirements.txt
+
+# Stage 3: Production image
+FROM base as production
+
+WORKDIR /app
+
+# Copy Python dependencies from builder
+COPY --from=builder /root/.local /root/.local
+
+# Make sure scripts in .local are usable
+ENV PATH=/root/.local/bin:$PATH
+
+# Copy application code
+COPY src/ ./src/
+COPY configs/ ./configs/
+COPY models/ ./models/
+COPY pyproject.toml setup.py ./
+
+# Install package in editable mode
+RUN pip install -e . --no-deps
+
+# Create logs directory
+RUN mkdir -p logs
+
+# Expose API port
+EXPOSE 8000
+
+# Health check
+HEALTHCHECK --interval=30s --timeout=10s --start-period=60s --retries=3 \
+    CMD curl -f http://localhost:8000/health || exit 1
+
+# Run the unified API with GPU support
+CMD ["uvicorn", "api.main:app", "--host", "0.0.0.0", "--port", "8000", "--workers", "1"]
+

@@ -98,3 +98,4 @@ async def generate_counter_speech(request: CounterSpeechRequest) -> CounterSpeec
         raise HTTPException(status_code=500, detail=f"Generation failed: {str(e)}")
 
 
+

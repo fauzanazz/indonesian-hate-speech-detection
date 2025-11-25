@@ -82,9 +82,6 @@ dataset/
 artifacts/
 outputs/
 
-# Scripts
-scripts/
-
 # Tests
 tests/
 

@@ -77,7 +77,7 @@ const HeroSection = () => {
               textShadow: '0 1px 8px hsla(var(--gradient-deep-navy), 0.5)'
             }}
           >
-            ToxiShield uses advanced machine learning to detect and filter toxic content in real-time, keeping your platform safe and welcoming.
+            Detoxify uses advanced machine learning to detect and filter toxic content in real-time, keeping your platform safe and welcoming.
           </p>
 
           <div className="flex flex-col sm:flex-row gap-4 justify-center items-center mb-12">

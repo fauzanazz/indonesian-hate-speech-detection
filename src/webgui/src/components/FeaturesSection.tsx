@@ -73,8 +73,8 @@ const FeaturesSection = () => {
               onClick={() => setActiveFeature(index)}
               className={`transition-all duration-300 ${
                 activeFeature === index 
-                  ? "bg-primary text-primary-foreground shadow-elevated" 
-                  : "hover:border-primary/50"
+                  ? "bg-primary text-primary-foreground shadow-lg border-2 border-primary hover:bg-primary/90" 
+                  : "bg-card text-foreground border-2 border-border hover:bg-card/80 hover:border-primary/50"
               }`}
             >
               <feature.icon className="w-4 h-4 mr-2" />

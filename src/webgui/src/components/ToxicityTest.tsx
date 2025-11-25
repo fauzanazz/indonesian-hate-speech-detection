@@ -76,7 +76,7 @@ const ToxicityTest = () => {
 
   return (
     <div className="space-y-6">
-      <Card className="p-6 bg-card border-border shadow-elevated">
+      <Card className="p-6 bg-white dark:bg-slate-900 border-slate-200 dark:border-slate-700 shadow-lg">
         <div className="space-y-4">
           <div>
             <label className="text-sm font-medium mb-2 block">Model Tier</label>
@@ -113,7 +113,7 @@ const ToxicityTest = () => {
         </div>
       </Card>
 
-      <Card className="p-8 bg-card border-border shadow-elevated min-h-[200px]">
+      <Card className="p-8 bg-white dark:bg-slate-900 border-slate-200 dark:border-slate-700 shadow-lg min-h-[200px]">
         {error ? (
           <div className="flex items-center justify-center h-full">
             <div className="text-center text-destructive">
@@ -147,28 +147,28 @@ const ToxicityTest = () => {
             </div>
 
             <div className="grid md:grid-cols-2 gap-4">
-              <div className="p-4 bg-muted/50 rounded-lg">
+              <div className="p-4 bg-slate-100 dark:bg-slate-800 rounded-lg">
                 <div className="text-sm text-muted-foreground mb-1">Toxicity Score</div>
                 <div className="text-3xl font-bold text-foreground">
                   {(result.toxicity_score * 100).toFixed(1)}%
                 </div>
               </div>
 
-              <div className="p-4 bg-muted/50 rounded-lg">
+              <div className="p-4 bg-slate-100 dark:bg-slate-800 rounded-lg">
                 <div className="text-sm text-muted-foreground mb-1">Confidence</div>
                 <div className="text-3xl font-bold text-foreground capitalize">
                   {result.confidence}
                 </div>
               </div>
 
-              <div className="p-4 bg-muted/50 rounded-lg">
+              <div className="p-4 bg-slate-100 dark:bg-slate-800 rounded-lg">
                 <div className="text-sm text-muted-foreground mb-1">Model</div>
                 <div className="text-lg font-semibold text-foreground">
                   {result.model_name}
                 </div>
               </div>
 
-              <div className="p-4 bg-muted/50 rounded-lg">
+              <div className="p-4 bg-slate-100 dark:bg-slate-800 rounded-lg">
                 <div className="text-sm text-muted-foreground mb-1">Latency</div>
                 <div className="text-lg font-semibold text-foreground">
                   {result.latency_ms.toFixed(2)} ms
@@ -177,9 +177,9 @@ const ToxicityTest = () => {
             </div>
 
             {result.explanation && (
-              <div className="p-4 bg-muted/30 rounded-lg">
+              <div className="p-4 bg-slate-100 dark:bg-slate-800 rounded-lg">
                 <div className="text-sm font-medium mb-2">Model Explanation</div>
-                <pre className="text-xs overflow-auto max-h-48 bg-background/50 p-3 rounded">
+                <pre className="text-xs overflow-auto max-h-48 bg-slate-50 dark:bg-slate-950 p-3 rounded">
                   {JSON.stringify(result.explanation, null, 2)}
                 </pre>
               </div>
@@ -190,7 +190,7 @@ const ToxicityTest = () => {
 
       {/* Counter Speech Section - Only shown if toxic content detected */}
       {result?.is_toxic && (
-        <Card className="p-6 bg-gradient-to-br from-blue-50/50 to-indigo-50/50 dark:from-blue-950/20 dark:to-indigo-950/20 border-blue-200 dark:border-blue-800 shadow-elevated">
+        <Card className="p-6 bg-gradient-to-br from-blue-50 to-indigo-50 dark:from-blue-950 dark:to-indigo-950 border-blue-200 dark:border-blue-800 shadow-lg">
           <div className="space-y-4">
             <div className="flex items-center gap-3">
               <MessageSquare className="w-6 h-6 text-blue-600 dark:text-blue-400" />
@@ -222,7 +222,7 @@ const ToxicityTest = () => {
                 </div>
 
                 <div className="grid md:grid-cols-2 gap-3">
-                  <div className="p-3 bg-white/50 dark:bg-gray-900/50 rounded-lg">
+                  <div className="p-3 bg-white dark:bg-slate-900 rounded-lg border border-blue-100 dark:border-blue-900">
                     <div className="text-xs text-muted-foreground mb-1">Model</div>
                     <div className="text-sm font-medium text-foreground">
                       {counterSpeech.model}
@@ -230,7 +230,7 @@ const ToxicityTest = () => {
                   </div>
 
                   {counterSpeech.generation_config && (
-                    <div className="p-3 bg-white/50 dark:bg-gray-900/50 rounded-lg">
+                    <div className="p-3 bg-white dark:bg-slate-900 rounded-lg border border-blue-100 dark:border-blue-900">
                       <div className="text-xs text-muted-foreground mb-1">Beam Search</div>
                       <div className="text-sm font-medium text-foreground">
                         {counterSpeech.generation_config.num_beams} beams

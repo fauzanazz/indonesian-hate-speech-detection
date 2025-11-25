@@ -34,7 +34,7 @@ const SearchTest = () => {
 
   return (
     <div className="space-y-6">
-      <Card className="p-6 bg-card border-border shadow-elevated">
+      <Card className="p-6 bg-white dark:bg-slate-900 border-slate-200 dark:border-slate-700 shadow-lg">
         <div className="space-y-4">
           <div>
             <label className="text-sm font-medium mb-2 block">Search Query</label>
@@ -92,7 +92,7 @@ const SearchTest = () => {
         </div>
       </Card>
 
-      <Card className="p-8 bg-card border-border shadow-elevated min-h-[200px]">
+      <Card className="p-8 bg-white dark:bg-slate-900 border-slate-200 dark:border-slate-700 shadow-lg min-h-[200px]">
         {error ? (
           <div className="flex items-center justify-center h-full">
             <div className="text-center text-destructive">
@@ -123,7 +123,7 @@ const SearchTest = () => {
             ) : (
               <div className="space-y-3 max-h-[500px] overflow-y-auto">
                 {result.results.map((item, index) => (
-                  <Card key={index} className="p-4 bg-muted/30 border-border hover:bg-muted/50 transition-colors">
+                  <Card key={index} className="p-4 bg-slate-50 dark:bg-slate-800 border-slate-200 dark:border-slate-700 hover:bg-slate-100 dark:hover:bg-slate-750 transition-colors">
                     <div className="flex items-start justify-between gap-4">
                       <div className="flex-1">
                         <p className="text-sm mb-2">{item.text}</p>
@@ -132,7 +132,7 @@ const SearchTest = () => {
                             {Object.entries(item.metadata).map(([key, value]) => (
                               <span 
                                 key={key}
-                                className="px-2 py-1 bg-background/50 text-xs rounded"
+                                className="px-2 py-1 bg-slate-100 dark:bg-slate-900 text-xs rounded border border-slate-200 dark:border-slate-600"
                               >
                                 <span className="font-medium">{key}:</span> {String(value)}
                               </span>

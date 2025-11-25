@@ -7,38 +7,41 @@ import { Button } from "@/components/ui/button";
 const models = [
   {
     id: 1,
-    name: "ToxiShield Lite",
-    description: "Fast and efficient model for basic toxicity detection",
-    details: "Our lightweight model is perfect for high-volume applications where speed is critical. It provides reliable toxicity detection with minimal latency, ideal for real-time chat applications and live comment sections.",
+    name: "TF-IDF + Logistic Regression",
+    description: "Tier 1 basic filter optimized for high-volume moderation.",
+    details:
+      "Sparse lexical features with calibrated logistic regression. Best when you need instant responses for chat widgets, inbox triage, or SMS pipelines and can tolerate a conservative first-pass filter.",
     specs: {
-      speed: "< 30ms",
-      accuracy: "94%",
-      languages: "50+",
-      categories: "5 core types"
+      speed: "~1–5 ms latency",
+      accuracy: "F1 ≈ 0.90 (val)",
+      languages: "Indonesian (formal & slang)",
+      categories: "Binary toxicity flag"
     }
   },
   {
     id: 2,
-    name: "ToxiShield Pro",
-    description: "Balanced performance and accuracy for most use cases",
-    details: "The recommended model for most applications, offering excellent balance between speed and accuracy. Detects nuanced toxicity patterns and provides detailed category breakdowns. Perfect for forums, reviews, and social platforms.",
+    name: "BiLSTM Contextual",
+    description: "Tier 2 sequential model that captures nuance and phrasing.",
+    details:
+      "Character + word embeddings feed a bidirectional LSTM with attention, enabling context-aware predictions. Ideal for community platforms or review systems that need balance between throughput and nuance.",
     specs: {
-      speed: "< 75ms",
-      accuracy: "97%",
-      languages: "100+",
-      categories: "12 detailed types"
+      speed: "~10–50 ms latency",
+      accuracy: "F1 ≈ 0.93 (val)",
+      languages: "Indonesian + colloquial variants",
+      categories: "Binary + subtle toxicity tags"
     }
   },
   {
     id: 3,
-    name: "ToxiShield Max",
-    description: "Maximum accuracy for critical content moderation",
-    details: "Our most sophisticated model with state-of-the-art accuracy. Uses advanced transformer architecture to understand context, sarcasm, and subtle forms of toxicity. Best for enterprise applications requiring the highest moderation standards.",
+    name: "IndoBERT Sociolinguistic",
+    description: "Tier 3 transformer for maximum accuracy and fairness audits.",
+    details:
+      "Fine-tuned indobenchmark/indobert-base-p1 with calibration and fairness monitoring. Recommended for policy teams, trust-and-safety desks, and any workflow where recall on edge cases matters more than raw speed.",
     specs: {
-      speed: "< 150ms",
-      accuracy: "99%",
-      languages: "120+",
-      categories: "20+ granular types"
+      speed: "~50–200 ms latency",
+      accuracy: "F1 ≈ 0.95 (val)",
+      languages: "Indonesian + regional slang",
+      categories: "Binary + sociolinguistic cues"
     }
   }
 ];

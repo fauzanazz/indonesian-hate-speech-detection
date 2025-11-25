@@ -40,7 +40,7 @@ const Header = () => {
       <div className="container mx-auto px-4 md:px-6">
         <div className="flex items-center justify-between h-16">
           <Link href="/" className="text-2xl font-bold text-primary">
-            ToxiShield
+            Detoxify
           </Link>
 
           {/* Desktop Navigation */}

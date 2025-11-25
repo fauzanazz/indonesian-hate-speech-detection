@@ -52,6 +52,7 @@ data/external/
 *.pth
 *.h5
 *.onnx
+!models/**
 
 # MLflow
 mlruns/

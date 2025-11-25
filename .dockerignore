@@ -75,9 +75,6 @@ Dockerfile
 .dockerignore
 docker-compose.yml
 
-# Dataset (should be mounted or downloaded)
-dataset/
-
 # Artifacts (should be generated or mounted)
 artifacts/
 outputs/

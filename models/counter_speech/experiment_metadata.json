@@ -1,0 +1,68 @@
+{
+  "best_experiment": "exp1_baseline",
+  "description": "Baseline: lr=5e-5, batch=2, max_len=256",
+  "hyperparameters": {
+    "learning_rate": 5e-05,
+    "batch_size": 2,
+    "max_length": 256
+  },
+  "metrics": {
+    "bleu-1": 0.08318354754621651,
+    "bleu-2": 0.06208853351807662,
+    "bleu-3": 0.0564953616025812,
+    "bleu-4": 0.0550014480888475,
+    "rouge-1": 0.10058760912789787,
+    "rouge-2": 0.05734126984126985,
+    "rouge-l": 0.09596260912789786
+  },
+  "all_experiments": [
+    {
+      "Experiment": "exp1_baseline",
+      "Description": "Baseline: lr=5e-5, batch=2, max_len=256",
+      "Learning Rate": 5e-05,
+      "Batch Size": 2,
+      "Max Length": 256,
+      "ROUGE-1": 0.10058760912789787,
+      "ROUGE-L": 0.09596260912789786,
+      "ROUGE-2": 0.05734126984126985,
+      "BLEU-1": 0.08318354754621651,
+      "BLEU-4": 0.0550014480888475
+    },
+    {
+      "Experiment": "exp2_high_lr",
+      "Description": "Higher LR: lr=1e-4, batch=2, max_len=256",
+      "Learning Rate": 0.0001,
+      "Batch Size": 2,
+      "Max Length": 256,
+      "ROUGE-1": 0.10039597227898964,
+      "ROUGE-L": 0.09641465043990916,
+      "ROUGE-2": 0.06445970695970696,
+      "BLEU-1": 0.08681010066851562,
+      "BLEU-4": 0.06455035163965567
+    },
+    {
+      "Experiment": "exp3_large_batch",
+      "Description": "Larger batch: lr=5e-5, batch=4, max_len=256",
+      "Learning Rate": 5e-05,
+      "Batch Size": 4,
+      "Max Length": 256,
+      "ROUGE-1": 0.07111991898307128,
+      "ROUGE-L": 0.06978658564973796,
+      "ROUGE-2": 0.04300264550264551,
+      "BLEU-1": 0.05726917545250329,
+      "BLEU-4": 0.04279145494341771
+    },
+    {
+      "Experiment": "exp4_longer_seq",
+      "Description": "Longer sequences: lr=5e-5, batch=2, max_len=512",
+      "Learning Rate": 5e-05,
+      "Batch Size": 2,
+      "Max Length": 512,
+      "ROUGE-1": 0.10058760912789787,
+      "ROUGE-L": 0.09596260912789786,
+      "ROUGE-2": 0.05734126984126985,
+      "BLEU-1": 0.08318354754621651,
+      "BLEU-4": 0.0550014480888475
+    }
+  ]
+}

@@ -1,7 +1,7 @@
 "use client";
 
 import { ChartConfig } from "@/types/dashboard";
-import { PieChart, Pie, Cell, BarChart, Bar, XAxis, YAxis, CartesianGrid, Tooltip, Legend, ResponsiveContainer } from "recharts";
+import { PieChart, Pie, Cell, BarChart, Bar, XAxis, YAxis, CartesianGrid, Tooltip, Legend, ResponsiveContainer, PieLabelRenderProps } from "recharts";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 
 interface ChartComponentProps {
@@ -58,7 +58,7 @@ function DonutChart({ config }: { config: ChartConfig["config"] }) {
           outerRadius={100}
           paddingAngle={5}
           dataKey="value"
-          label={(entry: { percentage?: number }) => `${entry.percentage?.toFixed(2)}%`}
+          label={(props: PieLabelRenderProps) => `${((props.percent ?? 0) * 100).toFixed(2)}%`}
         >
           {data.map((_, index) => (
             <Cell key={`cell-${index}`} fill={colors[index % colors.length]} />

@@ -4,18 +4,20 @@ import FeaturesSection from "@/components/FeaturesSection";
 import TestSection from "@/components/TestSection";
 import ModelSection from "@/components/ModelSection";
 import AboutSection from "@/components/AboutSection";
+import { AnimatedGradientBackground } from "@/components/AnimatedGradientBackground";
 
 const Index = () => {
   return (
-    <div className="min-h-screen">
-      <main>
+    <div className="min-h-screen relative">
+      <AnimatedGradientBackground />
+      <main className="relative z-10">
         <HeroSection />
         <FeaturesSection />
         <TestSection />
         <ModelSection />
         <AboutSection />
       </main>
-      <footer className="bg-card border-t border-border py-8">
+      <footer className="relative z-10 bg-card/80 backdrop-blur-sm border-t border-border py-8">
         <div className="container mx-auto px-4 md:px-6 text-center text-muted-foreground">
           <p>&copy; 2024 ToxiShield. All rights reserved.</p>
         </div>

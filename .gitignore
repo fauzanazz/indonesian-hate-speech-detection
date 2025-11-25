@@ -47,7 +47,6 @@ data/external/
 !dataset/*.csv
 
 # Models
-/models/
 *.pkl
 *.joblib
 *.pt

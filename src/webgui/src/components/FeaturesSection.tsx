@@ -3,7 +3,7 @@
 import { useState } from "react";
 import { Card } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
-import { MessageCircleHeart, ShieldAlert } from "lucide-react";
+import { MessageCircleHeart, SearchIcon, ShieldAlert } from "lucide-react";
 
 const features = [
   {
@@ -27,6 +27,17 @@ const features = [
       accuracy: "95.8%", 
       speed: "8ms per request" 
     }
+  },
+  {
+    id: 3,
+    title: "Search and Filter",
+    icon: SearchIcon,
+    description: "Mencari dan memfilter konten berbahaya berdasarkan kata kunci atau kategori.",
+    details: "Fitur ini membantu pengguna mencari konten berbahaya berdasarkan kata kunci atau kategori. Cocok untuk moderasi komentar real-time, filter percakapan, dan automoderation platform besar.",
+    stats: { 
+      accuracy: "95.8%", 
+       speed: "8ms per request" 
+    }
   }
 ];
 
@@ -34,11 +45,22 @@ const FeaturesSection = () => {
   const [activeFeature, setActiveFeature] = useState(0);
 
   return (
-    <section id="features" className="py-20 bg-background">
+    <section id="features" className="py-20 relative backdrop-blur-sm">
       <div className="container mx-auto px-4 md:px-6">
         <div className="text-center mb-12 animate-fade-in">
-          <h2 className="text-4xl md:text-5xl font-bold mb-4 text-foreground">Powerful Features</h2>
-          <p className="text-xl text-muted-foreground max-w-2xl mx-auto">
+          <h2
+            className="text-4xl md:text-5xl font-bold mb-4"
+            style={{
+              color: 'hsl(0 0% 100%)',
+              textShadow: '0 2px 16px hsla(var(--gradient-ocean-blue), 0.4)'
+            }}
+          >
+            Powerful Features
+          </h2>
+          <p
+            className="text-xl max-w-2xl mx-auto"
+            style={{ color: 'hsl(0 0% 90%)' }}
+          >
             Comprehensive toxicity detection for every use case
           </p>
         </div>
@@ -61,40 +83,100 @@ const FeaturesSection = () => {
           ))}
         </div>
 
-        <Card className="p-8 md:p-12 bg-card border-border shadow-elevated animate-scale-in">
+        <Card
+          className="p-8 md:p-12 animate-scale-in backdrop-blur-lg"
+          style={{
+            background: 'hsla(var(--gradient-deep-indigo), 0.4)',
+            border: '1px solid hsla(var(--gradient-light-cyan), 0.2)',
+            boxShadow: '0 8px 32px hsla(var(--gradient-deep-navy), 0.4)'
+          }}
+        >
           <div className="grid md:grid-cols-2 gap-8 items-center">
             <div>
               <div className="flex items-center gap-3 mb-4">
                 {(() => {
                   const IconComponent = features[activeFeature].icon;
                   return (
-                    <div className="p-3 bg-primary/10 rounded-lg">
-                      <IconComponent className="w-8 h-8 text-primary" />
+                    <div
+                      className="p-3 rounded-lg"
+                      style={{
+                        background: 'hsla(var(--gradient-ocean-blue), 0.3)',
+                        border: '1px solid hsla(var(--gradient-light-cyan), 0.3)'
+                      }}
+                    >
+                      <IconComponent
+                        className="w-8 h-8"
+                        style={{ color: 'hsl(var(--gradient-sky-blue))' }}
+                      />
                     </div>
                   );
                 })()}
-                <h3 className="text-3xl font-bold text-foreground">{features[activeFeature].title}</h3>
+                <h3
+                  className="text-3xl font-bold"
+                  style={{ color: 'hsl(0 0% 100%)' }}
+                >
+                  {features[activeFeature].title}
+                </h3>
               </div>
-              <p className="text-lg text-muted-foreground mb-6">{features[activeFeature].description}</p>
-              <p className="text-foreground/80 mb-6">{features[activeFeature].details}</p>
+              <p
+                className="text-lg mb-6"
+                style={{ color: 'hsl(0 0% 90%)' }}
+              >
+                {features[activeFeature].description}
+              </p>
+              <p
+                className="mb-6"
+                style={{ color: 'hsl(0 0% 85%)' }}
+              >
+                {features[activeFeature].details}
+              </p>
               <div className="flex gap-6">
                 <div>
-                  <div className="text-2xl font-bold text-primary">{features[activeFeature].stats.accuracy}</div>
-                  <div className="text-sm text-muted-foreground">Accuracy</div>
+                  <div
+                    className="text-2xl font-bold"
+                    style={{ color: 'hsl(var(--gradient-light-cyan))' }}
+                  >
+                    {features[activeFeature].stats.accuracy}
+                  </div>
+                  <div
+                    className="text-sm"
+                    style={{ color: 'hsl(0 0% 80%)' }}
+                  >
+                    Accuracy
+                  </div>
                 </div>
                 <div>
-                  <div className="text-2xl font-bold text-accent">{features[activeFeature].stats.speed}</div>
-                  <div className="text-sm text-muted-foreground">Response Time</div>
+                  <div
+                    className="text-2xl font-bold"
+                    style={{ color: 'hsl(var(--gradient-sky-blue))' }}
+                  >
+                    {features[activeFeature].stats.speed}
+                  </div>
+                  <div
+                    className="text-sm"
+                    style={{ color: 'hsl(0 0% 80%)' }}
+                  >
+                    Response Time
+                  </div>
                 </div>
               </div>
             </div>
-            <div className="bg-muted/30 rounded-lg p-8 min-h-[300px] flex items-center justify-center border border-border">
-              <div className="text-center text-muted-foreground">
+            <div
+              className="rounded-lg p-8 min-h-[300px] flex items-center justify-center backdrop-blur-sm"
+              style={{
+                background: 'hsla(var(--gradient-ocean-blue), 0.2)',
+                border: '1px solid hsla(var(--gradient-light-cyan), 0.2)'
+              }}
+            >
+              <div className="text-center">
                 {(() => {
                   const IconComponent = features[activeFeature].icon;
-                  return <IconComponent className="w-24 h-24 mx-auto mb-4 opacity-20" />;
+                  return <IconComponent
+                    className="w-24 h-24 mx-auto mb-4 opacity-30"
+                    style={{ color: 'hsl(var(--gradient-sky-blue))' }}
+                  />;
                 })()}
-                <p>Feature visualization</p>
+                <p style={{ color: 'hsl(0 0% 80%)' }}>Feature visualization</p>
               </div>
             </div>
           </div>

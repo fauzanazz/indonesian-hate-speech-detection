@@ -47,6 +47,8 @@ ENV PATH=/root/.local/bin:$PATH
 COPY src/ ./src/
 COPY configs/ ./configs/
 COPY models/ ./models/
+COPY dataset/ ./dataset/
+COPY scripts/ ./scripts/
 COPY pyproject.toml setup.py ./
 
 # Install package in editable mode
@@ -58,6 +60,6 @@ RUN mkdir -p logs
 # Expose API port
 EXPOSE 8000
 
-# Run the unified API
-CMD ["uvicorn", "api.main:app", "--host", "0.0.0.0", "--port", "8000", "--workers", "1"]
+# Bootstrap Qdrant before starting the unified API
+CMD ["/bin/sh", "-c", "python scripts/bootstrap_qdrant.py && exec uvicorn api.main:app --host 0.0.0.0 --port 8000 --workers 1"]
 

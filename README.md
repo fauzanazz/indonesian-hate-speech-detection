@@ -67,6 +67,17 @@ docker-compose up -d
 - Includes Qdrant vector database
 - Production-ready configuration
 - Easy scaling and deployment
+- Automatically seeds Qdrant with the dataset in `dataset/indonesian_hate_speech.csv`
+
+> **Note:** The container enriches Qdrant on startup by running the equivalent of:
+> ```
+> python -m src.toxic_search.index.builder \
+>     --data dataset/indonesian_hate_speech.csv \
+>     --text-col text \
+>     --label-col labels
+> ```
+> Override `QDRANT_BOOTSTRAP_DATA`, `QDRANT_BOOTSTRAP_TEXT_COLUMN`, or `QDRANT_BOOTSTRAP_LABEL_COLUMN`
+> if you want to seed different data.
 
 See [DOCKER.md](./DOCKER.md) for comprehensive Docker documentation.
 
